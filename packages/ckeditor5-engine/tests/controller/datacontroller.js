@@ -463,17 +463,39 @@ describe( 'DataController', () => {
 
 			schema.extend( '$block', { allowIn: 'div' } );
 			schema.extend( 'div', { allowIn: '$root' } );
-
-			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 		} );
 
 		it( 'should stringify a content of an element', () => {
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+
 			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', schema );
 
 			expect( data.stringify( modelElement ) ).to.equal( '<p>foo</p>' );
 		} );
 
 		it( 'should stringify a content of a document fragment', () => {
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+
+			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
+
+			expect( data.stringify( modelDocumentFragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
+		} );
+
+		it( 'should allow to provide an additional conversion options', () => {
+			downcastHelpers.elementToElement( {
+				model: 'paragraph',
+				view: ( data, viewWriter, conversionApi ) => {
+					console.log( conversionApi );
+				}
+			} );
+
+			// downcastHelpers.attributeToAttribute( {
+			// 	model: 'foo',
+			// 	view: (  ) => {
+			//
+			// 	}
+			// } );
+
 			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
 
 			expect( data.stringify( modelDocumentFragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
